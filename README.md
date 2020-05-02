@@ -1,30 +1,44 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/zeit/next.js/tree/canary/packages/create-next-app).
+# Practice Dokku NextJS
 
-## Getting Started
+## Setup 
 
-First, run the development server:
+### Install Dokku on Digital Ocean 
+1. Create Digital Ocean droplet with Dokku pre-installed 
+2. Follow this [guide](http://dokku.viewdocs.io/dokku/getting-started/install/digitalocean/)
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+### Create app in Dokku 
+1. `dokku apps:create practice-dokku`
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Prepare local app to push to Dokku 
+1. Create your app with git locally 
+2. Add remote `dokku` url
+    ```
+    git remote add dokku dokku@123.456.789.012:practice-dokku
+    ```
+3. Push to `dokku` remote
+    ```
+    git push dokku master
+    ```
+4. Your application will be launched on a particular port number Eg: `23149`. Thus your application URL will be like `http://68.101.221.21:23149` [Provided you use the `buildpack`. If you use `Dockerfile`, then the port number will be your docker file configuration]
+   - Remember to open up the port number on your DO if not you will not be able to access the website. Follow this [guide](https://www.digitalocean.com/community/questions/security-tips-and-suggestion-dokku-node-js-app)
+5. To change your application port number to port 80. Follow this [guide](https://github.com/dokku/dokku/blob/master/docs/networking/port-management.md)
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+### Adding a domain 
+1. `dokku domains:add practice-dokku www.domain.tld`
+2. Remember to configure your DigitalOcean records
 
-## Learn More
+### SSL Certificates 
+1. Make sure the app has a domain.
+2. Install [dokku-letsencrypt](https://github.com/dokku/dokku-letsencrypt).
+3. `dokku letsencrypt node-app`
+4. `dokku letsencrypt:cron-job --add` so the certificate is renewed automatically every 3 months.
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Resources referred 
+- https://pawelurbanek.com/optimize-dokku-deployment-speed
+- https://itnext.io/frontend-dockerized-build-artifacts-with-nextjs-9463f3da3362
+- https://www.albertgao.xyz/2019/01/28/how-to-create-your-own-dockerfile-for-a-rapid-dokku-deployment/
+- https://medium.com/@pimterry/effortlessly-add-https-to-dokku-with-lets-encrypt-900696366890
+- https://auth0.com/blog/hosting-applications-using-digitalocean-and-dokku/
+- https://www.digitalocean.com/community/questions/security-tips-and-suggestion-dokku-node-js-app
 
-You can check out [the Next.js GitHub repository](https://github.com/zeit/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/import?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
